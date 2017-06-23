@@ -36,10 +36,11 @@ public class App
     private void showMenu() {
         System.out.println("Choose 1 to add student\n" +
                 "Choose 2 to delete student\n" +
-                "Choose 3 to search student\n" +
-                "Choose 4 to show data base\n" +
-                "Choose 5 to delete data base\n" +
-                "Choose 6 to exit\n");
+                "Choose 3 to delete department\n" +
+                "Choose 4 to search student\n" +
+                "Choose 5 to show data base\n" +
+                "Choose 6 to delete data base\n" +
+                "Choose 7 to exit\n");
         switch(readTheNumb()){
             case 1:
                 addStudent();
@@ -48,15 +49,18 @@ public class App
                 deleteStudent();
                 break;
             case 3:
-                searchStudent();
+                deleteDepartment();
                 break;
             case 4:
-                showDB();
+                searchStudent();
                 break;
             case 5:
-                deleteDB();
+                showDB();
                 break;
             case 6:
+                deleteDB();
+                break;
+            case 7:
                 break;
             default:
                 System.out.println("Choose between 1-6!\n");
@@ -140,6 +144,22 @@ public class App
         showMenu();
     }
 
+    private void deleteDepartment() {
+        System.out.println("Enter department to delete:");
+        String department = readTheLine();
+        List<University> universityList = datastore.createQuery(University.class).asList();
+        for (University un : universityList) {
+            if(un.getDepartment().equals(department)){
+                for (Student st: un.getStudentList()) {
+                    datastore.delete(st);
+                }
+                datastore.delete(un);
+            }
+        }
+        System.out.println(department + " was successfully deleted!\n");
+        showMenu();
+    }
+
 
     private void showDB() {
         List<University> list = datastore.createQuery(University.class).asList();
@@ -151,6 +171,7 @@ public class App
             }
             System.out.println();
         }
+        System.out.println("Number of students at all departments: " + datastore.getCount(Student.class)+"\n");
         showMenu();
     }
 
